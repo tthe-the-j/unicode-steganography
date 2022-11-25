@@ -1,6 +1,7 @@
 import math
 import itertools
 from sympy import factorint
+import pickle
 # import textwrap
 
 
@@ -36,6 +37,7 @@ class UTF8(Encoding):
 
 class TextHider:
     encodings = [Ascii, UTF8]
+    unicode_statistics = None
 
     @classmethod
     def hide(cls, payload, carrier, allowed_characters, index):
@@ -135,7 +137,13 @@ class TextHider:
 
     @classmethod
     def _guess_payload(cls, possible_payloads):
-        ...
+        if cls.unicode_statistics is None:
+            cls._load_unicode_statistics()
+
+    @classmethod
+    def _load_unicode_statistics(cls):
+        with open("unicode_statistics.pickle", "rb") as f:
+            cls.unicode_statistics = pickle.load(f)
 
 
 def wrap(text, n):
