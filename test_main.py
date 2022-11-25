@@ -1,5 +1,5 @@
 import pytest
-import main
+from main import TextHider
 
 
 @pytest.mark.parametrize(
@@ -10,7 +10,7 @@ import main
     ],
 )
 def test_detect_character_set(text, character_set):
-    assert main.TextHider._detect_character_set(text) == character_set
+    assert TextHider._detect_character_set(text) == character_set
 
 
 @pytest.mark.parametrize(
@@ -21,4 +21,16 @@ def test_detect_character_set(text, character_set):
     ],
 )
 def test_base_n(num, radix, numerals, result):
-    assert main.TextHider._base_n(num, radix, numerals) == result
+    assert TextHider._base_n(num, radix, numerals) == result
+
+
+@pytest.mark.parametrize(
+    "payload, carrier, characters, index, result",
+    [
+        ["the", "abcdefg", "01", 3, "abc011101000110100001100101defg"],
+        ["whƝn", "ZXÝC&Ɲ", "0123456789ABCDEF", 1, "Z00770068019D006EXÝC&Ɲ"],
+        ["ä≅≇⦇", "AS⦮⦪", "012345", 4, "AS⦮⦪0001020010434101043430121115"]
+    ],
+)
+def test_hide(payload, carrier, characters, index, result):
+    assert TextHider.hide(payload, carrier, characters, index) == result
