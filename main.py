@@ -1,7 +1,8 @@
 import math
 import itertools
 from sympy import factorint
-import textwrap
+# import textwrap
+
 
 class Encoding:
     min_value : int
@@ -12,6 +13,7 @@ class Encoding:
     def is_valid(cls, character_code):
         return cls.min_value <= character_code <= cls.max_value
 
+
 class Ascii(Encoding):
     min_value = 0
     max_value = 256
@@ -21,6 +23,7 @@ class Ascii(Encoding):
     def convert(cls, integer):
         return chr(integer)
 
+
 class UTF8(Encoding):
     min_value = 0
     max_value = 65536
@@ -29,6 +32,7 @@ class UTF8(Encoding):
     @classmethod
     def convert(cls, integer):
         return chr(integer)
+
 
 class TextHider:
     encodings = [Ascii, UTF8]
@@ -44,8 +48,7 @@ class TextHider:
             encoded = input_string[slice(*indexes)]
         else:
             encoded = input_string
-        base = cls._detect_base(encoded)
-
+        possible_payload = cls._get_possible_payloads(encoded)
 
     """factory"""
     @classmethod
@@ -90,7 +93,7 @@ class TextHider:
         raise UnicodeError(f"Can't detect character set: {string}")
 
     @classmethod
-    def _detect_payload(cls, package, possible_encodings=None):
+    def _get_possible_payloads(cls, package, possible_encodings=None):
         possible_encodings = possible_encodings or cls.encodings
         # assuming data is not malformed
         unique_characters = set(package)
@@ -100,7 +103,8 @@ class TextHider:
         for f in factors:
             possible_character_permutations = {}
             print("factor:" + str(f))
-            bytes = textwrap.wrap(package, len(package)//f)
+            # bytes = textwrap.wrap(package, len(package)//f)
+            bytes = wrap(package, len(package) // f)
             print(bytes)
             for characters in itertools.permutations(unique_characters):
                 print(characters)
@@ -127,16 +131,17 @@ class TextHider:
                 else:
                     possible_character_permutations[characters] = encoded_data
             possible_factors[f] = possible_character_permutations
-
-
         return possible_factors
 
+    @classmethod
+    def _guess_payload(cls, possible_payloads):
+        ...
 
 
-
-
+def wrap(text, n):
+    return [text[i:i + n] for i in range(0, len(text), n)]
 
 
 if __name__ == "__main__":
-    #print(TextHider._decode_base("01110100",("0","1")))
-    print(TextHider._detect_base("011101000110100001100101"))
+    # print(TextHider._decode_base("01110100",("0","1")))
+    print(TextHider._detect_payload("011101000110100001100101"))
