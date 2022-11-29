@@ -3,6 +3,7 @@ nltk.download("twitter_samples")
 from nltk.corpus import twitter_samples
 from threading import Thread
 import pickle
+import queue
 
 character_dict = {}
 
@@ -12,6 +13,17 @@ next_chunk = 0
 
 print(samples)
 
+global write_queue
+write_queue = queue.Queue(maxsize=1000)
+
+def writer():
+    global write_queue
+    with open("dataset.csv") as f:
+        while True:
+            data = write_queue.get()
+            string = ",".join(data)
+            f.write(string)
+
 def worker():
     global next_chunk
     try:
@@ -19,11 +31,8 @@ def worker():
             # chunk = samples[next_chunk]
             chunk = next(samples)
             next_chunk += 1
-            for character in chunk:
-                if not character in character_dict.keys():
-                    character_dict[character] = 1
-                else:
-                    character_dict[character] += 1
+            for i in range(len(chunk)):
+                #get three adjacent characters
     except StopIteration:
         return
 
@@ -38,5 +47,6 @@ if __name__ == "__main__":
 
 print(character_dict)
 
+"""
 with open("unicode_statistics.pickle","wb") as f:
-    pickle.dump(character_dict,f)
+    pickle.dump(character_dict,f)"""

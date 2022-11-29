@@ -50,7 +50,8 @@ class TextHider:
             encoded = input_string[slice(*indexes)]
         else:
             encoded = input_string
-        possible_payload = cls._get_possible_payloads(encoded)
+        possible_payloads = cls._get_possible_payloads(encoded)
+        return cls._guess_payload(possible_payloads)
 
     """factory"""
     @classmethod
@@ -139,6 +140,7 @@ class TextHider:
     def _guess_payload(cls, possible_payloads):
         if cls.unicode_statistics is None:
             cls._load_unicode_statistics()
+
 
     @classmethod
     def _load_unicode_statistics(cls):
