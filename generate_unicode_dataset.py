@@ -4,6 +4,7 @@ from nltk.corpus import twitter_samples
 from threading import Thread
 import pickle
 import queue
+import pandas as pd
 
 character_dict = {}
 
@@ -13,16 +14,17 @@ next_chunk = 0
 
 print(samples)
 
-global write_queue
 write_queue = queue.Queue(maxsize=1000)
 
+df = pd.DataFrame(columns=["previous","current","next"])
+
+
 def writer():
-    global write_queue
-    with open("dataset.csv") as f:
-        while True:
-            data = write_queue.get()
-            string = ",".join(data)
-            f.write(string)
+    while True:
+        global write_queue
+        global df
+        df.append(write_queue.get())
+
 
 def worker():
     global next_chunk
@@ -32,9 +34,20 @@ def worker():
             chunk = next(samples)
             next_chunk += 1
             for i in range(len(chunk)):
-                #get three adjacent characters
+                current_character = chunk[i]
+                try:
+                    previous_character = chunk[i-1]
+                except IndexError:
+                    previous_character = "SOL"
+                try:
+                    next_character = chunk[i+1]
+                except IndexError:
+                    next_character = "EOL"
+                data = [previous_character, current_character, next_character]
+                write_queue.put(data)
     except StopIteration:
-        return
+        if write_queue.not_empty:
+            #put stuff on queue to stop writer
 
 
 num_workers = 100
