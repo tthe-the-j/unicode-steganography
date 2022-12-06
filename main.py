@@ -154,4 +154,4 @@ def wrap(text, n):
 
 if __name__ == "__main__":
     # print(TextHider._decode_base("01110100",("0","1")))
-    print(TextHider._detect_payload("011101000110100001100101"))
+    print(TextHider._get_possible_payloads("011101000110100001100101"))
