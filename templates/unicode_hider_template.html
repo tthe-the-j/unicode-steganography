@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- pyscript -->
+    <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+    <!-- text hider library -->
+    <py-config type="toml">
+        packages = ["sympy"]
+
+        [[fetch]]
+        files = ["./data.py"]
+    </py-config>
+    <py-script src="{{ url_for('static', filename='text_hider.py') }}"></py-script>
+
+    <!-- site script -->
+    <py-script src="{{ url_for('static', filename='work.py') }}"></py-script>
+
+    <!-- water.css -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+
+    <!-- style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+
+    <script>
+        window.onload = (event) => {method = {{ method }}}
+    </script>
+
+    <title>Unicode Steganography</title>
+
+</head>
+<body>
+    <!-- https://realpython.com/introduction-to-flask-part-1-setting-up-a-static-site/ -->
+    <form id="work">
+        <div class="row">
+            <textarea class="column left" id="work-carrier" placeholder="carrier ..." spellcheck="false"></textarea>
+            <textarea class="column right" id="work-payload" placeholder="payload ..." spellcheck="false"></textarea>
+        </div>
+        <button id="work-button" type="button">encode</button>
+        <p id="work-output"></p>
+        <py-repl></py-repl>
+    </form>
+</body>
+</html>
