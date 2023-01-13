@@ -6,37 +6,14 @@ except ModuleNotFoundError:  # in pyscript
 
 #  https://docs.pyscript.net/latest/tutorials/getting-started.html
 
-carrier_textarea = document.getElementById("work-carrier")
-payload_textarea = document.getElementById("work-payload")
-button = document.getElementById("work-button")
-output = document.getElementById("work-output")
+from js import method
 
-result = None
+carrier_element = js.document.getElementById("carrier")
+payload_element = js.document.getElementById("payload")
 
-test = None
-
-def encode(*args, **kwargs):
-    print("encode")
-    global test
-    test = 1
-    carrier = carrier_textarea.value
-    payload = payload_textarea.value
-    global result
-    result = TextHider.hide(payload, carrier, ["0", "1"], 1)
-    output.innerHTML = result
-
-def decode(*args, **kwargs):
-    ...
-
-def show_possible_decodings(*args, **kwargs):
-    ...
-
-
-
-from js import method # encode or decode
-
-if method == "encode":
-    button.
-    button.onclick = encode
-elif method == "decode":
-    button.onclick = decode
+def convert():
+    global method
+    if method == "hide":
+        carrier = carrier_element.value
+        ...
+        #TextHider.hide(...)

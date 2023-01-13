@@ -11,9 +11,6 @@
     <!-- text hider library -->
     <py-config type="toml">
         packages = ["sympy"]
-
-        [[fetch]]
-        files = ["./data.py"]
     </py-config>
     <py-script src="{{ url_for('static', filename='text_hider.py') }}"></py-script>
 
@@ -27,7 +24,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 
     <script>
-        window.onload = (event) => {method = {{ method }}}
+        window.onload = (event) => {method = '{{ method }}'}
     </script>
 
     <title>Unicode Steganography</title>
@@ -35,12 +32,16 @@
 </head>
 <body>
     <!-- https://realpython.com/introduction-to-flask-part-1-setting-up-a-static-site/ -->
-    <form id="work">
+    <form id="form">
         <div class="row">
-            <textarea class="column left" id="work-carrier" placeholder="carrier ..." spellcheck="false"></textarea>
-            <textarea class="column right" id="work-payload" placeholder="payload ..." spellcheck="false"></textarea>
+            <textarea class="column left" id=carrier" placeholder="carrier ..." spellcheck="false"></textarea>
+            <textarea class="column right" id="payload" placeholder="payload ..." spellcheck="false"></textarea>
         </div>
-        <button id="work-button" type="button">encode</button>
+        <button id="convert" type="button">encode</button>
+        <button id="swap"type="button">
+            <img src="{{ url_for('static',filename='img/swap_vert_white_24dp.svg') }}" loading="lazy" width="24" height="24" alt="Swap">
+            Swap
+        </button>
         <p id="work-output"></p>
         <py-repl></py-repl>
     </form>
