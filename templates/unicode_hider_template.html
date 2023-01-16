@@ -34,15 +34,15 @@
     <!-- https://realpython.com/introduction-to-flask-part-1-setting-up-a-static-site/ -->
     <form id="form">
         <div class="row">
-            <textarea class="column left" id=carrier" placeholder="carrier ..." spellcheck="false"></textarea>
+            <textarea class="column left" id="carrier" placeholder="carrier ..." spellcheck="false"></textarea>
             <textarea class="column right" id="payload" placeholder="payload ..." spellcheck="false"></textarea>
         </div>
-        <button id="convert" type="button">encode</button>
-        <button id="swap"type="button">
-            <img src="{{ url_for('static',filename='img/swap_vert_white_24dp.svg') }}" loading="lazy" width="24" height="24" alt="Swap">
+        <button id="convert" type="button">Convert</button>
+        <button id="swap" type="button">
+            <!--<img src="{{ url_for('static',filename='img/swap_vert_white_24dp.svg') }}" loading="lazy" width="24" height="24" alt="Swap">-->
             Swap
         </button>
-        <p id="work-output"></p>
+        <p id="output"></p>
         <py-repl></py-repl>
     </form>
 </body>
