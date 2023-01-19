@@ -28,8 +28,8 @@ def test_base_n(num, radix, numerals, result):
     "payload, carrier, characters, index, result",
     [
         ["the", "abcdefg", "01", 3, "abc011101000110100001100101defg"],
-        ["whƝn", "ZXÝC&Ɲ", "0123456789ABCDEF", 1, "Z00770068019D006EXÝC&Ɲ"],
-        ["ä≅≇⦇", "AS⦮⦪", "012345", 4, "AS⦮⦪0001020010434101043430121115"],
+        ["when the bruh hwen the the eabz", "ZXÝC&Ɲ", "0123456789ABCDEF", 1, "Z7768656E207468652062727568206877656E2074686520746865206561627AXÝC&Ɲ"],
+        ["bruh the when", "AS⦮⦪", "012345", 4, "AS⦮⦪0242031003130252005203120252024500520315025202450302"],
     ],
 )
 def test_hide(payload, carrier, characters, index, result):
@@ -41,10 +41,13 @@ def test_hide(payload, carrier, characters, index, result):
         ["011101000110100001100101",None,None,None,"the"],
         ["abc011101000110100001100101defg",("0","1"),None,None,"the"],
         ["abc011101000110100001100101defg",None,3,27,"the"],
-        ["00770068019D006E",None,None,None,"whƝn"],
-        ["Z00770068019D006EXÝC&Ɲ","0123456789ABCDEF",None,None,"whƝn"],
-        ["Z00770068019D006EXÝC&Ɲ",1,17,None,"whƝn"],
+        ["7768656E207468652062727568206877656E2074686520746865206561627A",None,None,None,"when the bruh hwen the the eabz"],
+        ["Z7768656E207468652062727568206877656E2074686520746865206561627AXÝC&Ɲ","0123456789ABCDEF",None,None,"when the bruh hwen the the eabz"],
+        ["Z7768656E207468652062727568206877656E2074686520746865206561627AXÝC&Ɲ",None,1,-6,"when the bruh hwen the the eabz"],
+        ["0242031003130252005203120252024500520315025202450302",None,None,None,"bruh the when"],
+        ["AS⦮⦪0242031003130252005203120252024500520315025202450302","012345",None,None,"bruh the when"],
+        ["AS⦮⦪0242031003130252005203120252024500520315025202450302",None,4,None,"bruh the when"],
     ]
 )
 def test_show(input_string, characters, start, end, result):
-    assert TextHider.show(input_string, characters, start=start, end=end).text == result
+    assert TextHider.show(input_string, characters, start=start, end=end, possible_encodings=[TextHider.Ascii]).text == result

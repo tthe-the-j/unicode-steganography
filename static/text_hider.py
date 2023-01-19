@@ -54,7 +54,6 @@ class Payload:
         return self._alphabet_count
 
 
-
 class TextHider:
     encodings = [Ascii, UTF8]
     unicode_statistics = None
@@ -65,12 +64,14 @@ class TextHider:
         return _hide(payload, carrier, index)
 
     @classmethod
-    def show(cls, input_string, characters=None, start=None, end=None):
+    def show(cls, input_string, characters=None, start=None, end=None, possible_encodings=None):
+        possible_encodings = possible_encodings or cls.encodings
         if characters is not None:
-            encoded = "".join((list(filter(lambda c: c in characters, input_string))))
+            encoded = "".join((list(filter(lambda c: c in characters, list(input_string)))))
         else:
             encoded = input_string[start:end]
-        possible_payloads = cls._get_possible_payloads(encoded)
+        possible_payloads = cls._get_possible_payloads(encoded, possible_encodings=possible_encodings)
+        print(possible_payloads)
         return cls._most_possible_payload(possible_payloads)
 
     """factory"""
@@ -120,6 +121,7 @@ class TextHider:
         possible_encodings = possible_encodings or cls.encodings
         # assuming data is not malformed
         unique_characters = set(package)
+        print(unique_characters)
         base = len(unique_characters)
         factors = list(factorint(len(package)).keys())[::-1]
         possible_factors = {}
