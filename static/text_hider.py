@@ -34,6 +34,27 @@ class UTF8(Encoding):
         return chr(integer)
 
 
+class Payload:
+
+    def __init__(self, text, characters, encoding, factor):
+        self.text = text
+        self.characters = characters
+        self.encoding = encoding
+        self.factor = factor
+
+        self._alphabet_count = None
+
+    def __repr__(self):
+        return f"<Payload: text={self.text}>"
+
+    @property
+    def alphabet_count(self):
+        if self._alphabet_count is None:
+            self._alphabet_count = len(list(filter(lambda c: 0x41 <= ord(c) <= 0x7a, self.text)))
+        return self._alphabet_count
+
+
+
 class TextHider:
     encodings = [Ascii, UTF8]
     unicode_statistics = None
@@ -44,13 +65,13 @@ class TextHider:
         return _hide(payload, carrier, index)
 
     @classmethod
-    def show(cls, input_string, indexes=None):
-        if indexes is not None:
-            encoded = input_string[slice(*indexes)]
+    def show(cls, input_string, characters=None, start=None, end=None):
+        if characters is not None:
+            encoded = "".join((list(filter(lambda c: c in characters, input_string))))
         else:
-            encoded = input_string
+            encoded = input_string[start:end]
         possible_payloads = cls._get_possible_payloads(encoded)
-        return cls._guess_payload(possible_payloads)
+        return cls._most_possible_payload(possible_payloads)
 
     """factory"""
     @classmethod
@@ -102,6 +123,7 @@ class TextHider:
         base = len(unique_characters)
         factors = list(factorint(len(package)).keys())[::-1]
         possible_factors = {}
+        possible_payloads = []
         for f in factors:
             possible_character_permutations = {}
             bytes = wrap(package, len(package) // f)
@@ -118,28 +140,28 @@ class TextHider:
                                 pass
                     if not possible_character_encodings:
                         break
-                    for encoding in possible_encodings:
+                    for encoding in possible_character_encodings:
                         try:
                             encoded_data[encoding] += encoding.convert(character_code)
                         except OverflowError:
                             break
                 else:
                     possible_character_permutations[characters] = encoded_data
+                    for encoding, text in encoded_data.items():
+                        possible_payloads.append(Payload(text, characters, encoding, f))
             possible_factors[f] = possible_character_permutations
-        return possible_factors
+        #return possible_factors
+        return possible_payloads
 
     @classmethod
-    def _guess_payload(cls, possible_payloads):
-        if cls.unicode_statistics is None:
-            cls._load_unicode_statistics()
-
+    def _sort_payloads(cls, possible_payloads):
+        #letter_count = lambda text: len(list(filter(lambda c: 0x41 <= ord(c) <= 0x7a, text)))
+        #return sorted(list(itertools.chain.from_iterable([[[(letter_count(text), text, characters, factor) for encoding, text in j.items()] for characters, j in i.items()] for factor, i in possible_payloads.items()])))[::-1]
+        return sorted(possible_payloads, key=lambda p: p.alphabet_count)[::-1]
 
     @classmethod
-    def _load_unicode_statistics(cls):
-        ...
-        """
-        with open("unicode_statistics.pickle", "rb") as f:
-            cls.unicode_statistics = pickle.load(f)"""
+    def _most_possible_payload(cls, possible_payloads):
+        return cls._sort_payloads(possible_payloads)[0]
 
 
 def wrap(text, n):
@@ -148,5 +170,6 @@ def wrap(text, n):
 
 if __name__ == "__main__":
     pass
-    # print(TextHider._decode_base("01110100",("0","1")))
-    # print(TextHider._get_possible_payloads("011101000110100001100101"))
+    #TextHider._decode_base("01110100",("0","1"))
+    possible = TextHider._get_possible_payloads("011101000110100001100101")
+    print(TextHider._sort_payloads(possible))
