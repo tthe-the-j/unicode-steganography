@@ -171,7 +171,7 @@ def wrap(text, n):
 
 
 if __name__ == "__main__":
-    pass
+    """
     #TextHider._decode_base("01110100",("0","1"))
     possible = TextHider._get_possible_payloads("011101000110100001100101")
-    print(TextHider._sort_payloads(possible))
+    print(TextHider._sort_payloads(possible))"""

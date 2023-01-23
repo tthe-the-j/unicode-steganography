@@ -1,6 +1,7 @@
 try:  # IDE workaround for imports
     from text_hider import TextHider
     from pyscript import Element, js, document
+    import pyscript
 except ModuleNotFoundError:  # in pyscript
     pass
 
@@ -21,9 +22,11 @@ def convert(*args):
         payload = payload_element.value
         allowed_characters = ["0", "1"]
         index = 0
+        global hidden
         hidden = TextHider.hide(payload, carrier, allowed_characters, index)
         print(hidden)
-        output_element.innerHTML = hidden
+        output_element.innerText = hidden
+        print("wrote to element")
 
 
 convert_button.onclick = convert
