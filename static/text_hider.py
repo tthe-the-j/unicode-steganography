@@ -96,6 +96,7 @@ class TextHider:
         assert radix == len(numerals)
         if num == 0:
             return numerals[0]
+        # https://stackoverflow.com/questions/2267362/how-to-convert-an-integer-to-a-string-in-any-base
         return cls._base_n(num // radix, radix, numerals).lstrip(numerals[0]) + numerals[num % radix]
 
     @classmethod
@@ -126,10 +127,11 @@ class TextHider:
         factors = list(factorint(len(package)).keys())[::-1]
         possible_factors = {}
         possible_payloads = []
+        perms = itertools.permutations(unique_characters)
         for f in factors:
             possible_character_permutations = {}
             bytes = wrap(package, len(package) // f)
-            for characters in itertools.permutations(unique_characters):
+            for characters in perms:
                 encoded_data = {encoding: "" for encoding in possible_encodings}
                 possible_character_encodings = possible_encodings.copy()
                 for byte in bytes:

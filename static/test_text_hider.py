@@ -50,4 +50,4 @@ def test_hide(payload, carrier, characters, index, result):
     ]
 )
 def test_show(input_string, characters, start, end, result):
-    assert TextHider.show(input_string, characters, start=start, end=end, possible_encodings=[TextHider.Ascii]).text == result
+    assert TextHider.show(input_string, characters, start=start, end=end, possible_encodings=[Ascii]).text == result
