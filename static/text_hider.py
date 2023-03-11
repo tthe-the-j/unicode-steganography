@@ -15,12 +15,21 @@ class Encoding:
         return cls.min_value <= character_code <= cls.max_value
 
 
+def validate(f):
+    def wrapper(cls, integer, *args, **kwargs):
+        assert cls.is_valid(cls, integer)
+        f(integer, *args, **kwargs)
+
+    return wrapper
+
+
 class Ascii(Encoding):
     min_value = 0
     max_value = 256
     python_string = "ascii"
 
     @classmethod
+    @validate
     def convert(cls, integer):
         return chr(integer)
 
@@ -31,6 +40,7 @@ class UTF8(Encoding):
     python_string = "utf-8"
 
     @classmethod
+    @validate
     def convert(cls, integer):
         return chr(integer)
 
