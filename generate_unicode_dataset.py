@@ -47,6 +47,7 @@ def worker():
                 write_queue.put(data)
     except StopIteration:
         if write_queue.not_empty:
+            ...
             #put stuff on queue to stop writer
 
 

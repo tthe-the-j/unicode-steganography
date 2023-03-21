@@ -17,8 +17,8 @@ class Encoding:
 
 def validate(f):
     def wrapper(cls, integer, *args, **kwargs):
-        assert cls.is_valid(cls, integer)
-        f(integer, *args, **kwargs)
+        assert cls.is_valid(integer)
+        return f(integer, *args, **kwargs)
 
     return wrapper
 
@@ -30,7 +30,7 @@ class Ascii(Encoding):
 
     @classmethod
     @validate
-    def convert(cls, integer):
+    def convert(integer):
         return chr(integer)
 
 
@@ -41,7 +41,7 @@ class UTF8(Encoding):
 
     @classmethod
     @validate
-    def convert(cls, integer):
+    def convert(integer):
         return chr(integer)
 
 
